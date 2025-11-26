@@ -5,7 +5,7 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .card:hover {
@@ -23,16 +23,22 @@
 .collapsible {
   overflow: hidden;
   transition: max-height 320ms ease, opacity 220ms ease, padding 220ms ease;
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
 }
+
 .collapsed {
   max-height: 0;
+  opacity: 0;
   padding-top: 0;
   padding-bottom: 0;
-  opacity: 0;
 }
+
 .expanded {
-  max-height: 1200px; /* large enough for tables */
+  max-height: 1500px;
   opacity: 1;
+  padding: 1.5rem;
 }
 
 .title {
@@ -58,8 +64,8 @@
 }
 
 .content {
-  padding: 1.5rem;
-  min-height: 200px;
+  padding: 0;
+  min-height: auto;
 }
 
 .loading,

@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import styles from './ReportCard.module.css';
 
 export default function ReportCard({ title, problemNumber, endpoint, columns }) {
-  // keep expanded by default so records remain visible (preserve previous behavior)
-  const [open, setOpen] = useState(true);
+  // Start collapsed by default - only header shows initially, taking minimal space
+  const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
