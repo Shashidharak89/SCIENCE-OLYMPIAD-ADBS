@@ -13,6 +13,12 @@
   flex-direction: column;
 }
 
+/* support overlay mode when controlled by Shell */
+.sidebar.hidden {
+  transform: translateX(-110%);
+}
+
+
 .logo {
   padding: 2rem 1.5rem;
   border-bottom: 2px solid rgba(217, 104, 70, 0.3);

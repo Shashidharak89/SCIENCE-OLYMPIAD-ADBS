@@ -1,4 +1,3 @@
-import Sidebar from "@/components/Sidebar";
 import ReportCard from "@/components/ReportCard";
 import styles from "./page.module.css";
 
@@ -80,7 +79,6 @@ const reports = [
 export default function Home() {
   return (
     <div className={styles.layout}>
-      <Sidebar />
       <main className={styles.main}>
         <div className={styles.header}>
           <h1>📊 Science Olympiad Analytics Dashboard</h1>
@@ -88,15 +86,17 @@ export default function Home() {
         </div>
 
         <div className={styles.container}>
-          {reports.map((report) => (
-            <ReportCard
-              key={report.problemNumber}
-              title={report.title}
-              problemNumber={report.problemNumber}
-              endpoint={report.endpoint}
-              columns={report.columns}
-            />
-          ))}
+          <div className={styles.reports}>
+            {reports.map((report) => (
+              <ReportCard
+                key={report.problemNumber}
+                title={report.title}
+                problemNumber={report.problemNumber}
+                endpoint={report.endpoint}
+                columns={report.columns}
+              />
+            ))}
+          </div>
         </div>
       </main>
     </div>

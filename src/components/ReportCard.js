@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import styles from './ReportCard.module.css';
 
 export default function ReportCard({ title, problemNumber, endpoint, columns }) {
+  // keep expanded by default so records remain visible (preserve previous behavior)
+  const [open, setOpen] = useState(true);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -67,14 +69,21 @@ export default function ReportCard({ title, problemNumber, endpoint, columns }) 
 
   return (
     <div className={styles.card}>
-      <div className={styles.header}>
+      <div
+        className={styles.header}
+        role="button"
+        tabIndex={0}
+        onClick={() => setOpen((s) => !s)}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setOpen((s) => !s); }}
+        aria-expanded={open}
+      >
         <h3 className={styles.title}>
           <span className={styles.problemNumber}>{problemNumber}.</span>
           {title}
         </h3>
       </div>
 
-      <div className={styles.content}>
+      <div className={`${styles.content} ${styles.collapsible} ${open ? styles.expanded : styles.collapsed}`}>
         {loading && <p className={styles.loading}>Loading data...</p>}
         {error && <p className={styles.error}>Error: {error}</p>}
         
