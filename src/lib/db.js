@@ -29,7 +29,7 @@ export async function connectDB() {
         // useUnifiedTopology: true,
       })
       .then((mongooseInstance) => {
-        console.log("✅ Connected to MongoDB");
+        console.log("Connected to MongoDB");
         return mongooseInstance;
       })
       .catch((err) => {
