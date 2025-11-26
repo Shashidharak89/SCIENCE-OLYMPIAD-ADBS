@@ -4,14 +4,25 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './Sidebar.module.css';
 
-export default function Sidebar() {
+export default function Sidebar({ onClose, isOpen }) {
   const pathname = usePathname();
 
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <h2>Science Olympiad</h2>
-        <p>ADBS</p>
+      <div className={styles.header}>
+        <div className={styles.logo}>
+          <h2>Science Olympiad</h2>
+          <p>ADBS</p>
+        </div>
+        {onClose && isOpen && (
+          <button
+            className={styles.closeButton}
+            onClick={onClose}
+            aria-label="Close sidebar"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       <nav className={styles.nav}>

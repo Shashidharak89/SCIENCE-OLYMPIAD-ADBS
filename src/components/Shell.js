@@ -29,7 +29,7 @@ export default function Shell({ children }) {
       </button>
 
       <div className={`${styles.sidebarWrap} ${open ? styles.show : ""}`}>
-        <Sidebar />
+        <Sidebar onClose={() => setOpen(false)} isOpen={open} />
       </div>
 
       <div className={styles.content} onClick={() => open && setOpen(false)}>
