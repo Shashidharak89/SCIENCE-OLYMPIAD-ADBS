@@ -22,21 +22,21 @@
 
 .hamburger span {
   display: block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+  height: 3px;
+  width: 24px;
+  border-radius: 2px;
   background: var(--color-dark);
   transition: transform 0.25s ease, opacity 0.2s ease;
 }
 
 .hamburger.open span:nth-child(1) {
-  transform: translateX(9px) translateY(9px) rotate(45deg);
+  transform: translateY(9px) rotate(45deg);
 }
 .hamburger.open span:nth-child(2) {
   opacity: 0;
 }
 .hamburger.open span:nth-child(3) {
-  transform: translateX(-9px) translateY(-9px) rotate(-45deg);
+  transform: translateY(-9px) rotate(-45deg);
 }
 
 .sidebarWrap {
@@ -44,29 +44,19 @@
   left: 0;
   top: 0;
   bottom: 0;
-  transform: translateX(-110%);
-  transition: transform 300ms cubic-bezier(.2,.9,.2,1);
+  width: 280px;
+  transform: translateX(-100%);
+  transition: transform 300ms cubic-bezier(0.2, 0.9, 0.2, 1);
   z-index: 50;
 }
 
 .sidebarWrap.show {
-  transform: translateX(0%);
+  transform: translateX(0);
 }
 
 .content {
   flex: 1 1 auto;
-  margin-left: 0; /* sidebar overlays on small screens */
   width: 100%;
+  margin-left: 0;
   transition: margin-left 300ms ease;
-}
-
-@media (min-width: 1000px) {
-  .sidebarWrap {
-    transform: none;
-    position: relative;
-    width: 280px;
-  }
-  .hamburger {
-    display: none;
-  }
 }
