@@ -59,5 +59,25 @@ export async function GET() {
     })
   )}));
 
-  return NextResponse.json({ data: enriched });
+    // Flatten the structure for table display
+    const data = [];
+    agg.forEach((g) => {
+      const subject = subjects.find((s) => s._id === g._id);
+      g.topResults.forEach((result, index) => {
+        const student = studentsById[result.studentId];
+        data.push({
+          subjectName: subject?.name,
+          subjectCode: subject?.code,
+          rank: index + 1,
+          studentId: result.studentId,
+          studentName: student?.name,
+          marks: result.marks,
+          schoolOrCollege: student?.schoolOrCollege,
+          level: result.level,
+          year: result.year,
+        });
+      });
+    });
+
+    return NextResponse.json({ data });
 }

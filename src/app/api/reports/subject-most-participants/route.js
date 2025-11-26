@@ -27,14 +27,19 @@ export async function GET() {
   ]);
 
   if (agg.length === 0) {
-    return NextResponse.json({ subject: null });
+    return NextResponse.json({ data: [] });
   }
 
   const top = agg[0];
   const subject = await Subject.findById(top._id).lean();
 
-  return NextResponse.json({
-    subject,
-    participantCount: top.participantCount
-  });
+    const data = [{
+      subjectId: subject._id,
+      subjectName: subject.name,
+      subjectCode: subject.code,
+      participantCount: top.participantCount,
+      maxMarks: subject.maxMarks
+    }];
+
+    return NextResponse.json({ data });
 }

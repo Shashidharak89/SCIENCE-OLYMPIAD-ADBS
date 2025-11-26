@@ -28,5 +28,13 @@ export async function GET() {
 
   const students = await Student.find({ _id: { $in: studentIds } }).lean();
 
-  return NextResponse.json({ students });
+    const data = students.map((student) => ({
+      studentId: student._id,
+      name: student.name,
+      schoolOrCollege: student.schoolOrCollege,
+      region: student.region,
+      class: student.class,
+    }));
+
+    return NextResponse.json({ data });
 }

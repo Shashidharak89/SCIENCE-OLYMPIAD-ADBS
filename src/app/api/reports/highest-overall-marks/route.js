@@ -21,15 +21,20 @@ export async function GET() {
   ]);
 
   if (agg.length === 0) {
-    return NextResponse.json({ student: null });
+    return NextResponse.json({ data: [] });
   }
 
   const best = agg[0];
 
   const student = await Student.findById(best._id).lean();
 
-  return NextResponse.json({
-    student,
-    totalMarks: best.totalMarks
-  });
+  const data = [{
+    studentId: student._id,
+    name: student.name,
+    schoolOrCollege: student.schoolOrCollege,
+    region: student.region,
+    totalMarks: best.totalMarks,
+  }];
+
+  return NextResponse.json({ data });
 }

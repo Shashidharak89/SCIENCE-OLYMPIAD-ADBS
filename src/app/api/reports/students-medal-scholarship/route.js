@@ -28,5 +28,19 @@ export async function GET() {
   const studentIds = agg.map((s) => s._id);
   const students = await Student.find({ _id: { $in: studentIds } }).lean();
 
-  return NextResponse.json({ studentsWithAwards: agg, students });
+    const awardMap = {};
+    agg.forEach((item) => {
+      awardMap[item._id] = item;
+    });
+
+    const data = students.map((student) => ({
+      studentId: student._id,
+      name: student.name,
+      schoolOrCollege: student.schoolOrCollege,
+      region: student.region,
+      medalCount: awardMap[student._id]?.medals?.length || 0,
+      scholarshipAmount: awardMap[student._id]?.totalScholarship || 0,
+    }));
+
+    return NextResponse.json({ data });
 }

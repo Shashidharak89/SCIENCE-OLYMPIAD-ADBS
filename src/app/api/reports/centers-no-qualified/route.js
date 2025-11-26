@@ -40,5 +40,38 @@ export async function GET() {
   const centerIds = agg.map((c) => c._id);
   const centers = await Center.find({ _id: { $in: centerIds } }).lean();
 
-  return NextResponse.json({ centers });
+    // Get participant count for each center
+    const centerCounts = await Result.aggregate([
+      {
+        $match: { centerId: { $in: centerIds } }
+      },
+      {
+        $group: {
+          _id: "$centerId",
+          students: { $addToSet: "$studentId" }
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          participantCount: { $size: "$students" }
+        }
+      }
+    ]);
+
+    const countMap = {};
+    centerCounts.forEach((item) => {
+      countMap[item._id] = item.participantCount;
+    });
+
+    const data = centers.map((center) => ({
+      centerId: center._id,
+      centerName: center.name,
+      city: center.city,
+      state: center.state,
+      region: center.region,
+      participantCount: countMap[center._id] || 0,
+    }));
+
+    return NextResponse.json({ data });
 }

@@ -8,7 +8,6 @@ export const runtime = "nodejs";
 
 export async function GET() {
   await connectDB();
-
   // 1) Get subject averages
   const subjectAvg = await Result.aggregate([
     {
@@ -67,9 +66,17 @@ export async function GET() {
     })
     .map((s) => s._id);
 
-  const students = await Student.find({
-    _id: { $in: qualifiedStudentIds }
-  }).lean();
+  const students = await Student.find({ _id: { $in: qualifiedStudentIds } }).lean();
 
-  return NextResponse.json({ students });
+  // Map to standardized response
+  const data = students.map((st) => ({
+    studentId: st._id,
+    regNo: st.regNo,
+    name: st.name,
+    schoolOrCollege: st.schoolOrCollege,
+    class: st.class,
+    region: st.region
+  }));
+
+  return NextResponse.json({ data });
 }

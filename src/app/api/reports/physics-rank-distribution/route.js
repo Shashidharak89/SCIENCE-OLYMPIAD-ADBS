@@ -21,5 +21,11 @@ export async function GET() {
     { $sort: { _id: 1 } }
   ]);
 
-  return NextResponse.json({ rankDistribution: agg });
+    const data = agg.map((item) => ({
+      rank: item._id,
+      studentCount: item.count,
+      percentage: parseFloat(((item.count / agg.reduce((sum, a) => sum + a.count, 0)) * 100).toFixed(2)),
+    }));
+
+    return NextResponse.json({ data });
 }
