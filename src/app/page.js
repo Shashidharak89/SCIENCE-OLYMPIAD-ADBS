@@ -81,8 +81,7 @@ export default function Home() {
     <div className={styles.layout}>
       <main className={styles.main}>
         <div className={styles.header}>
-          <h1>📊 Science Olympiad Analytics Dashboard</h1>
-          <p>Comprehensive Reports and Analysis</p>
+          <h1>Science Olympiad Dashboard</h1>
         </div>
 
         <div className={styles.container}>
