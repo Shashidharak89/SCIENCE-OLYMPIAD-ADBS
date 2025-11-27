@@ -6,9 +6,12 @@ import styles from './admin.module.css';
 
 export default function AdminCenters() {
   const [formData, setFormData] = useState({
+    code: '',
     name: '',
-    state: '',
+    address: '',
     city: '',
+    state: '',
+    region: '',
   });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,12 +30,24 @@ export default function AdminCenters() {
       const response = await fetch('/api/center/insert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          _id: formData.code,
+          code: formData.code,
+          name: formData.name,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          region: formData.region,
+        }),
       });
 
-      if (!response.ok) throw new Error('Failed to insert center');
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to insert center');
+      }
+      
       setMessage('✅ Center added successfully!');
-      setFormData({ name: '', state: '', city: '' });
+      setFormData({ code: '', name: '', address: '', city: '', state: '', region: '' });
     } catch (error) {
       setMessage(`❌ Error: ${error.message}`);
     } finally {
@@ -52,6 +67,19 @@ export default function AdminCenters() {
         <div className={styles.container}>
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.formGroup}>
+              <label htmlFor="code">Center Code *</label>
+              <input
+                type="text"
+                id="code"
+                name="code"
+                value={formData.code}
+                onChange={handleChange}
+                placeholder="Enter center code (e.g., BLR-C01)"
+                required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
               <label htmlFor="name">Center Name *</label>
               <input
                 type="text"
@@ -60,6 +88,31 @@ export default function AdminCenters() {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter center name"
+                required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="address">Address</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Enter center address"
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="city">City *</label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                placeholder="Enter city"
                 required
               />
             </div>
@@ -78,15 +131,14 @@ export default function AdminCenters() {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="city">City *</label>
+              <label htmlFor="region">Region</label>
               <input
                 type="text"
-                id="city"
-                name="city"
-                value={formData.city}
+                id="region"
+                name="region"
+                value={formData.region}
                 onChange={handleChange}
-                placeholder="Enter city"
-                required
+                placeholder="Enter region"
               />
             </div>
 

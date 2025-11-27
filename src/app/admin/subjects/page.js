@@ -6,8 +6,10 @@ import styles from './admin.module.css';
 
 export default function AdminSubjects() {
   const [formData, setFormData] = useState({
-    name: '',
     code: '',
+    name: '',
+    maxMarks: '100',
+    passMarks: '40',
   });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,12 +28,22 @@ export default function AdminSubjects() {
       const response = await fetch('/api/subject/insert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          _id: formData.code,
+          code: formData.code,
+          name: formData.name,
+          maxMarks: parseInt(formData.maxMarks),
+          passMarks: parseInt(formData.passMarks),
+        }),
       });
 
-      if (!response.ok) throw new Error('Failed to insert subject');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to insert subject');
+      }
+      
       setMessage('✅ Subject added successfully!');
-      setFormData({ name: '', code: '' });
+      setFormData({ code: '', name: '', maxMarks: '100', passMarks: '40' });
     } catch (error) {
       setMessage(`❌ Error: ${error.message}`);
     } finally {
@@ -51,19 +63,6 @@ export default function AdminSubjects() {
         <div className={styles.container}>
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.formGroup}>
-              <label htmlFor="name">Subject Name *</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter subject name (e.g., Physics, Chemistry, Biology)"
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
               <label htmlFor="code">Subject Code *</label>
               <input
                 type="text"
@@ -71,8 +70,45 @@ export default function AdminSubjects() {
                 name="code"
                 value={formData.code}
                 onChange={handleChange}
-                placeholder="Enter subject code (e.g., PHY, CHM, BIO)"
+                placeholder="e.g., PHY, CHM, BIO"
                 required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="name">Subject Name *</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="e.g., Physics, Chemistry, Biology"
+                required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="maxMarks">Max Marks</label>
+              <input
+                type="number"
+                id="maxMarks"
+                name="maxMarks"
+                value={formData.maxMarks}
+                onChange={handleChange}
+                min="1"
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="passMarks">Pass Marks</label>
+              <input
+                type="number"
+                id="passMarks"
+                name="passMarks"
+                value={formData.passMarks}
+                onChange={handleChange}
+                min="0"
               />
             </div>
 

@@ -9,13 +9,18 @@ export default function AdminResults() {
     studentId: '',
     examId: '',
     subjectId: '',
-    marksObtained: '',
-    rank: '',
-    qualified: false,
-    qualifiedRegional: false,
-    qualifiedNational: false,
-    medal: false,
-    scholarship: false,
+    centerId: '',
+    level: 'SCHOOL',
+    year: new Date().getFullYear(),
+    marks: '',
+    rankInCenter: '',
+    rankOverall: '',
+    qualifiedForRegional: false,
+    qualifiedForNational: false,
+    qualifiedForInternational: false,
+    medal: '',
+    hasCertificate: true,
+    passed: true,
   });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,25 +43,46 @@ export default function AdminResults() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          marksObtained: parseInt(formData.marksObtained),
-          rank: formData.rank ? parseInt(formData.rank) : null,
+          studentId: formData.studentId,
+          examId: formData.examId,
+          subjectId: formData.subjectId,
+          centerId: formData.centerId,
+          level: formData.level,
+          year: parseInt(formData.year),
+          marks: parseInt(formData.marks),
+          rankInCenter: formData.rankInCenter ? parseInt(formData.rankInCenter) : undefined,
+          rankOverall: formData.rankOverall ? parseInt(formData.rankOverall) : undefined,
+          qualifiedForRegional: formData.qualifiedForRegional,
+          qualifiedForNational: formData.qualifiedForNational,
+          qualifiedForInternational: formData.qualifiedForInternational,
+          medal: formData.medal || null,
+          hasCertificate: formData.hasCertificate,
+          passed: formData.passed,
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to insert result');
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to insert result');
+      }
+      
       setMessage('✅ Result added successfully!');
       setFormData({
         studentId: '',
         examId: '',
         subjectId: '',
-        marksObtained: '',
-        rank: '',
-        qualified: false,
-        qualifiedRegional: false,
-        qualifiedNational: false,
-        medal: false,
-        scholarship: false,
+        centerId: '',
+        level: 'SCHOOL',
+        year: new Date().getFullYear(),
+        marks: '',
+        rankInCenter: '',
+        rankOverall: '',
+        qualifiedForRegional: false,
+        qualifiedForNational: false,
+        qualifiedForInternational: false,
+        medal: '',
+        hasCertificate: true,
+        passed: true,
       });
     } catch (error) {
       setMessage(`❌ Error: ${error.message}`);
@@ -110,18 +136,60 @@ export default function AdminResults() {
                 name="subjectId"
                 value={formData.subjectId}
                 onChange={handleChange}
-                placeholder="Enter subject ID"
+                placeholder="Enter subject ID (e.g., SUB1)"
                 required
               />
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="marksObtained">Marks Obtained *</label>
+              <label htmlFor="centerId">Center ID *</label>
+              <input
+                type="text"
+                id="centerId"
+                name="centerId"
+                value={formData.centerId}
+                onChange={handleChange}
+                placeholder="Enter center ID (e.g., CTR1)"
+                required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="level">Level *</label>
+              <select
+                id="level"
+                name="level"
+                value={formData.level}
+                onChange={handleChange}
+                required
+              >
+                <option value="SCHOOL">School</option>
+                <option value="REGIONAL">Regional</option>
+                <option value="NATIONAL">National</option>
+                <option value="INTERNATIONAL">International</option>
+              </select>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="year">Year *</label>
               <input
                 type="number"
-                id="marksObtained"
-                name="marksObtained"
-                value={formData.marksObtained}
+                id="year"
+                name="year"
+                value={formData.year}
+                onChange={handleChange}
+                min="2000"
+                required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="marks">Marks *</label>
+              <input
+                type="number"
+                id="marks"
+                name="marks"
+                value={formData.marks}
                 onChange={handleChange}
                 placeholder="Enter marks obtained"
                 min="0"
@@ -130,34 +198,52 @@ export default function AdminResults() {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="rank">Rank</label>
+              <label htmlFor="rankInCenter">Rank In Center</label>
               <input
                 type="number"
-                id="rank"
-                name="rank"
-                value={formData.rank}
+                id="rankInCenter"
+                name="rankInCenter"
+                value={formData.rankInCenter}
                 onChange={handleChange}
-                placeholder="Enter rank (optional)"
+                placeholder="Enter rank in center"
                 min="1"
               />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="rankOverall">Rank Overall</label>
+              <input
+                type="number"
+                id="rankOverall"
+                name="rankOverall"
+                value={formData.rankOverall}
+                onChange={handleChange}
+                placeholder="Enter overall rank"
+                min="1"
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="medal">Medal</label>
+              <select
+                id="medal"
+                name="medal"
+                value={formData.medal || ''}
+                onChange={handleChange}
+              >
+                <option value="">None</option>
+                <option value="GOLD">Gold</option>
+                <option value="SILVER">Silver</option>
+                <option value="BRONZE">Bronze</option>
+              </select>
             </div>
 
             <div className={styles.checkboxGroup}>
               <label>
                 <input
                   type="checkbox"
-                  name="qualified"
-                  checked={formData.qualified}
-                  onChange={handleChange}
-                />
-                <span>Qualified</span>
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  name="qualifiedRegional"
-                  checked={formData.qualifiedRegional}
+                  name="qualifiedForRegional"
+                  checked={formData.qualifiedForRegional}
                   onChange={handleChange}
                 />
                 <span>Qualified for Regional</span>
@@ -166,8 +252,8 @@ export default function AdminResults() {
               <label>
                 <input
                   type="checkbox"
-                  name="qualifiedNational"
-                  checked={formData.qualifiedNational}
+                  name="qualifiedForNational"
+                  checked={formData.qualifiedForNational}
                   onChange={handleChange}
                 />
                 <span>Qualified for National</span>
@@ -176,21 +262,31 @@ export default function AdminResults() {
               <label>
                 <input
                   type="checkbox"
-                  name="medal"
-                  checked={formData.medal}
+                  name="qualifiedForInternational"
+                  checked={formData.qualifiedForInternational}
                   onChange={handleChange}
                 />
-                <span>Medal</span>
+                <span>Qualified for International</span>
               </label>
 
               <label>
                 <input
                   type="checkbox"
-                  name="scholarship"
-                  checked={formData.scholarship}
+                  name="hasCertificate"
+                  checked={formData.hasCertificate}
                   onChange={handleChange}
                 />
-                <span>Scholarship</span>
+                <span>Has Certificate</span>
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  name="passed"
+                  checked={formData.passed}
+                  onChange={handleChange}
+                />
+                <span>Passed</span>
               </label>
             </div>
 

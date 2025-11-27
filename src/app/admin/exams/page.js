@@ -6,9 +6,13 @@ import styles from './admin.module.css';
 
 export default function AdminExams() {
   const [formData, setFormData] = useState({
-    name: '',
-    date: '',
-    totalMarks: '',
+    examId: '',
+    subjectId: '',
+    centerId: '',
+    level: 'SCHOOL',
+    year: new Date().getFullYear(),
+    round: '1',
+    examDate: '',
   });
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,14 +32,31 @@ export default function AdminExams() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          totalMarks: parseInt(formData.totalMarks),
+          _id: formData.examId,
+          subjectId: formData.subjectId,
+          centerId: formData.centerId,
+          level: formData.level,
+          year: parseInt(formData.year),
+          round: parseInt(formData.round),
+          examDate: formData.examDate ? new Date(formData.examDate).toISOString() : undefined,
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to insert exam');
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to insert exam');
+      }
+      
       setMessage('✅ Exam added successfully!');
-      setFormData({ name: '', date: '', totalMarks: '' });
+      setFormData({ 
+        examId: '', 
+        subjectId: '', 
+        centerId: '', 
+        level: 'SCHOOL', 
+        year: new Date().getFullYear(),
+        round: '1',
+        examDate: '', 
+      });
     } catch (error) {
       setMessage(`❌ Error: ${error.message}`);
     } finally {
@@ -55,41 +76,93 @@ export default function AdminExams() {
         <div className={styles.container}>
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.formGroup}>
-              <label htmlFor="name">Exam Name *</label>
+              <label htmlFor="examId">Exam ID *</label>
               <input
                 type="text"
-                id="name"
-                name="name"
-                value={formData.name}
+                id="examId"
+                name="examId"
+                value={formData.examId}
                 onChange={handleChange}
-                placeholder="Enter exam name (e.g., Regional Science Olympiad 2025)"
+                placeholder="Enter exam ID (e.g., EXM10)"
                 required
               />
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="date">Exam Date *</label>
+              <label htmlFor="subjectId">Subject ID *</label>
               <input
-                type="date"
-                id="date"
-                name="date"
-                value={formData.date}
+                type="text"
+                id="subjectId"
+                name="subjectId"
+                value={formData.subjectId}
                 onChange={handleChange}
+                placeholder="Enter subject ID (e.g., PHY)"
                 required
               />
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="totalMarks">Total Marks *</label>
+              <label htmlFor="centerId">Center ID *</label>
+              <input
+                type="text"
+                id="centerId"
+                name="centerId"
+                value={formData.centerId}
+                onChange={handleChange}
+                placeholder="Enter center ID (e.g., MNG-C01)"
+                required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="level">Level *</label>
+              <select
+                id="level"
+                name="level"
+                value={formData.level}
+                onChange={handleChange}
+                required
+              >
+                <option value="SCHOOL">School</option>
+                <option value="REGIONAL">Regional</option>
+                <option value="NATIONAL">National</option>
+                <option value="INTERNATIONAL">International</option>
+              </select>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="year">Year *</label>
               <input
                 type="number"
-                id="totalMarks"
-                name="totalMarks"
-                value={formData.totalMarks}
+                id="year"
+                name="year"
+                value={formData.year}
                 onChange={handleChange}
-                placeholder="Enter total marks"
-                min="1"
+                min="2000"
                 required
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="round">Round</label>
+              <input
+                type="number"
+                id="round"
+                name="round"
+                value={formData.round}
+                onChange={handleChange}
+                min="1"
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="examDate">Exam Date & Time</label>
+              <input
+                type="datetime-local"
+                id="examDate"
+                name="examDate"
+                value={formData.examDate}
+                onChange={handleChange}
               />
             </div>
 
